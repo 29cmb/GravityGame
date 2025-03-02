@@ -24,6 +24,7 @@ local function lerp(a, b, t)
 end
 
 function Player:Load(world)
+    self.world = world
     self.body = love.physics.newBody(world, 0, 0, "dynamic")
     self.body:setLinearDamping(1)
     self.shape = love.physics.newRectangleShape(50, 50)
@@ -131,4 +132,31 @@ function Player:Draw()
     )
     
     love.graphics.polygon("line", self.body:getWorldPoints(self.shape:getPoints()))
+
+    local gX, gY = self.world:getGravity()
+    local magnitude = math.sqrt(gX * gX + gY * gY)
+    local normalizedX = (gX / magnitude) * 100
+    local normalizedY = (gY / magnitude) * 100
+    
+    love.graphics.line(
+        playerScreenX,
+        playerScreenY,
+        playerScreenX + normalizedX,
+        playerScreenY + normalizedY
+    )
+    
+    love.graphics.polygon("line", self.body:getWorldPoints(self.shape:getPoints()))
+end
+
+function Player:Click()
+    local mX, mY = love.mouse.getPosition()
+    local playerScreenX = self.body:getX() - self.CameraData["CameraX"]
+    local playerScreenY = self.body:getY() - self.CameraData["CameraY"]
+
+
+    local angle = math.atan2(mY - playerScreenY, mX - playerScreenX)
+    local gravityX = math.cos(angle) * 1000
+    local gravityY = math.sin(angle) * 1000
+
+    self.world:setGravity(gravityX, gravityY)
 end

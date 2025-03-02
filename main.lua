@@ -20,3 +20,9 @@ function love.update(dt)
     world:update(dt)
     Player:Update(dt)
 end
+
+function love.mousepressed(x, y, button)
+    if button == 1 then
+        Player:Click()
+    end
+end
