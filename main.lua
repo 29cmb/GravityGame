@@ -9,6 +9,19 @@ function love.load()
     Player:Load(world)
     Level:Initialize(world)
     Level:LoadLevel(require("levels.Level1"))
+    world:setCallbacks(function(a, b) 
+        -- Begin touch
+        local fixtureAType = a:getUserData()
+        local fixtureBType = b:getUserData()
+
+        if (fixtureAType == "Button" and fixtureBType == "Crate") then
+            Level:ActivateButton(a:getBody())
+        elseif (fixtureAType == "Crate" and fixtureBType == "Button") then
+            Level:ActivateButton(b:getBody())
+        end
+    end, function(a, b)
+        -- End touch
+    end)
 end
 
 function love.draw()

@@ -22,6 +22,40 @@ function Level:LoadLevel(data)
             ["type"] = "Platform"
         })
     end
+
+    for _,button in pairs(data.Buttons) do 
+        local body = love.physics.newBody(self.world, button.x + (45 / 2), button.y + 35, "static")
+        local shape = love.physics.newRectangleShape(45, 20)
+        local fixture = love.physics.newFixture(body, shape)
+        fixture:setUserData("Button")
+
+        table.insert(self.map, {
+            ["body"] = body,
+            ["shape"] = shape,
+            ["fixture"] = fixture,
+            ["transform"] = {button.x, button.y},
+            ["type"] = "Button",
+            ["active"] = false
+        })
+    end
+
+    for _,crate in pairs(data.Crates) do 
+        local body = love.physics.newBody(self.world, crate.x + (50 / 2), crate.y + (50 / 2), "dynamic")
+        local shape = love.physics.newRectangleShape(50, 50)
+        local fixture = love.physics.newFixture(body, shape)
+        body:setGravityScale(0.5)
+        body:setLinearDamping(1)
+        fixture:setRestitution(0)
+        fixture:setUserData("Crate")
+
+        table.insert(self.map, {
+            ["body"] = body,
+            ["shape"] = shape,
+            ["fixture"] = fixture,
+            ["transform"] = {crate.x, crate.y},
+            ["type"] = "Crate"
+        })
+    end
 end
 
 function Level:Draw()
@@ -33,6 +67,30 @@ function Level:Draw()
             love.graphics.rectangle("fill", v.transform[1] - Player.CameraData.CameraX, v.transform[2] - Player.CameraData.CameraY, v.transform[3], v.transform[4])
             love.graphics.polygon("line", v.body:getWorldPoints(v.shape:getPoints()))
             love.graphics.setColor(1, 1, 1)
+        end
+
+        if v.type == "Button" then 
+            local color = v.active == true and {0,1,0} or {1,0,0}
+            love.graphics.setColor(unpack(color))
+            love.graphics.rectangle("fill", (v.transform[1] - Player.CameraData.CameraX) + 2.25, (v.transform[2] - Player.CameraData.CameraY) + 25, 40, 10)
+            love.graphics.polygon("line", v.body:getWorldPoints(v.shape:getPoints()))
+            love.graphics.setColor(1, 1, 1)
+            love.graphics.draw(Sprites["ButtonBase"], (v.transform[1] - Player.CameraData.CameraX), v.transform[2] - Player.CameraData.CameraY, 0, 1.4, 1.4)
+        end
+
+        if v.type == "Crate" then 
+            love.graphics.setColor(0,0,1)
+            love.graphics.polygon("line", v.body:getWorldPoints(v.shape:getPoints()))
+            love.graphics.setColor(1, 1, 1)
+            love.graphics.draw(Sprites["Crate"], (v.body:getX() - Player.CameraData.CameraX) - (50/2), (v.body:getY() - Player.CameraData.CameraY) - (40/2), 0, 1.4, 1.4)
+        end
+    end
+end
+
+function Level:ActivateButton(body)
+    for _,v in pairs(self.map) do 
+        if v.type == "Button" and v.body == body then 
+            v.active = true
         end
     end
 end

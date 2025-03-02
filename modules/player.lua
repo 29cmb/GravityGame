@@ -155,8 +155,9 @@ function Player:Click()
 
 
     local angle = math.atan2(mY - playerScreenY, mX - playerScreenX)
-    local gravityX = math.cos(angle) * 1000
-    local gravityY = math.sin(angle) * 1000
+    local gravityX = math.cos(angle) * 500
+    local gravityY = math.sin(angle) * 500
 
     self.world:setGravity(gravityX, gravityY)
+    self.body:applyAngularImpulse(1)
 end
