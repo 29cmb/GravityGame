@@ -1,5 +1,7 @@
 Sprites = {
-    ["Player"] = "assets/player.png"
+    ["Player"] = "assets/player.png",
+    ["Arrow"] = "assets/arrow.png",
+    ["Ring"] = "assets/ring.png"
 }
 
 function Sprites:LoadSprites()

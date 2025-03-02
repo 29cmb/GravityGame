@@ -6,7 +6,7 @@ function Level:Initialize(world)
 end
 
 function Level:LoadLevel(data)
-    if data.End then self.map.End = data.End end
+    if data.Start then self.map.Start = data.Start end
     for _,platform in pairs(data.Platforms) do 
         local body = love.physics.newBody(self.world, platform.x + (platform.w / 2), platform.y + (platform.h / 2), "static")
         local shape = love.physics.newRectangleShape(platform.w, platform.h)

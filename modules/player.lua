@@ -80,6 +80,11 @@ function Player:Update(dt)
     
     self.CameraData.CameraX = cX - self.CameraData.CameraOffsetX
     self.CameraData.CameraY = cY - self.CameraData.CameraOffsetY
+
+    if self.body:getY() > 800 then 
+        self.body:setLinearVelocity(0, 0)
+        self.body:setTransform(Level.map.Start.x, Level.map.Start.y, 0)
+    end
 end
 
 function Player:Draw()
@@ -88,6 +93,34 @@ function Player:Draw()
 
     love.graphics.draw(
         Sprites["Player"], 
+        self.body:getX() - self.CameraData["CameraX"], 
+        self.body:getY() - self.CameraData["CameraY"], 
+        self.body:getAngle(),
+        1.5 * self.MovementData["Direction"], 
+        1.5, 
+        spriteWidth / 2, 
+        spriteHeight / 2
+    )
+
+    local playerScreenX = self.body:getX() - self.CameraData["CameraX"]
+    local playerScreenY = self.body:getY() - self.CameraData["CameraY"]
+
+    local mX, mY = love.mouse.getPosition()
+    local angle = math.atan2(mX - playerScreenX, -(mY - playerScreenY))
+
+    love.graphics.draw(
+        Sprites["Arrow"], 
+        self.body:getX() - self.CameraData["CameraX"], 
+        self.body:getY() - self.CameraData["CameraY"], 
+        angle,
+        1.5 * self.MovementData["Direction"], 
+        1.5, 
+        spriteWidth / 2, 
+        spriteHeight / 2
+    )
+
+    love.graphics.draw(
+        Sprites["Ring"], 
         self.body:getX() - self.CameraData["CameraX"], 
         self.body:getY() - self.CameraData["CameraY"], 
         self.body:getAngle(),
